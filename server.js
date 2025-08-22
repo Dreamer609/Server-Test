@@ -2,25 +2,23 @@ const http = require("http");
 const aquireSVG = require("./src/helper/aquireSVG");
 require("dotenv").config();
 
-const PORT = process.env.PORT || 3000; 
+const PORT = process.env.PORT || 3000;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
 const server = http.createServer((req, res) => {
-
   if (req.method === "GET" && req.url === "/") {
-    res.writeHead(200, { "Content-type": "text/plain" });
+    res.writeHead(200, { "Content-Type": "text/plain" });
     res.end("Welcome!");
-  } else {
-    res.writeHead(404, { "Content-Type": "text/plain" });
-    res.end("Not welcome");
+    return;
   }
 
   if (req.method === "GET" && req.url === "/resource/putSVG") {
     aquireSVG(req, res);
-  } else {
-    res.writeHead(404, { "Content-Type": "text/plain" });
-    res.end("Not Found");
+    return;
   }
+
+  res.writeHead(404, { "Content-Type": "text/plain" });
+  res.end("Not Found");
 });
 
 // Bind to all network interfaces (required on Railway)

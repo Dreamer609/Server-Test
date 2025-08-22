@@ -4,10 +4,10 @@ const aquireSVG = (req, res) => {
     if (hasAUTH) {
       if (hasAUTH === process.env.AUTH_TOKEN) {
         res.writeHead(200, { "Content-Type": "text/plain" });
-        res.end("Hello aquring svg");
+        res.end("Hello acquiring svg");
       } else {
         res.writeHead(403, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: "authurization failed" }));
+        res.end(JSON.stringify({ error: "authorization failed" }));
       }
     } else {
       res.writeHead(401, { "Content-Type": "application/json" });
