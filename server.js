@@ -12,7 +12,7 @@ const server = http.createServer((req, res) => {
     res.end("Welcome!");
   } else {
     res.writeHead(404, { "Content-Type": "text/plain" });
-    res.end("Not Found");
+    res.end("Not welcome");
   }
 
   if (req.method === "GET" && req.url === "/resource/putSVG") {
