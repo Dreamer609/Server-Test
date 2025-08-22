@@ -1,0 +1,44 @@
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Logs
+logs
+*.log
+*.out
+*.pid
+*.gz
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Env files (important for secrets like AUTH_TOKEN)
+.env
+.env.local
+.env.*.local
+
+# Build and cache
+dist/
+build/
+.cache/
+.next/
+out/
+tmp/
+
+# IDE/editor junk
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+
+# Coverage / test
+coverage/
+.nyc_output/
