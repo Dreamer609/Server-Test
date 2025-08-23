@@ -40,13 +40,22 @@ const server = http.createServer((req, res) => {
 
   // Handle root path with authentication
   if (req.method === "GET" && parsedUrl.pathname === "/") {
-    if (process.env.QUERRY_TOKEN === parsedUrl.query.key) {
-      res.writeHead(200, { "Content-Type": "text/plain" });
-      res.end("Welcome, admin!");
-    } else {
-      res.writeHead(401, { "Content-Type": "text/plain" });
-      res.end("Authentication failed");
-    }
+      const providedKey = parsedUrl.query.key;
+
+      // Add strict validation
+      if (!providedKey) {
+        res.writeHead(401, { "Content-Type": "text/plain" });
+        res.end("Authentication failed - No key provided");
+        return;
+      }
+
+      if (providedKey === process.env.QUERRY_TOKEN) {
+        res.writeHead(200, { "Content-Type": "text/plain" });
+        res.end("Welcome, admin!");
+      } else {
+        res.writeHead(401, { "Content-Type": "text/plain" });
+        res.end("Authentication failed - Invalid key");
+      }
     return;
   }
 
