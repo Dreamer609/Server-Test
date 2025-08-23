@@ -1,7 +1,7 @@
 const http = require("http");
 const aquireSVG = require("./src/helper/aquireSVG");
 require("dotenv").config();
-const url = require("url");
+const url = require("url"); // You need to import url module
 
 const PORT = process.env.PORT || 3000;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
@@ -22,23 +22,24 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  const parsedUrl = url.parse(req.url, true);
+  const parsedUrl = url.parse(req.url, true); // You need to parse the URL
 
   // Handle root path with authentication
   if (req.method === "GET" && parsedUrl.pathname === "/") {
-    const providedKey = parsedUrl.query.key;
+    const isAdmin = req.headers["authorization"];
 
     // Add strict validation
-    if (providedKey === process.env.QUERRY_TOKEN) {
-      res.writeHead(200, { "Content-Type": "text/plain" });
-      res.end("Welcome, admin!");
-    } else if (!providedKey) {
-      res.writeHead(401, { "Content-Type": "text/plain" });
-      res.end("Authentication failed - No key provided");
-      return;
+    if (isAdmin) {
+      if (isAdmin === process.env.ADMIN_AUTH_TOKEN) {
+        res.writeHead(200, { "Content-Type": "text/plain" });
+        res.end("Welcome, admin!");
+      } else {
+        res.writeHead(403, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Unauthorized user" }));
+      }
     } else {
-      res.writeHead(401, { "Content-Type": "text/plain" });
-      res.end("Authentication failed - Invalid key");
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Who are you" }));
     }
     return;
   }
@@ -56,7 +57,7 @@ const server = http.createServer((req, res) => {
 
 // Use the proper PORT from environment variables
 server.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on ${BASE_URL}:${PORT}`);
+  console.log(`🚀 Server running on ${BASE_URL}`);
   console.log(`📍 Development-Local: http://localhost:${PORT}`);
   console.log(`📍 Allowed-Origin: ${FRONTEND_URL}`);
 });
