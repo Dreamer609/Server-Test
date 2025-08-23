@@ -9,10 +9,9 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
 const server = http.createServer((req, res) => {
   // CORS headers - allow both production and development origins
-  const allowedOrigins =
-    process.env.NODE_ENV === "production" ? FRONTEND_URL : BASE_URL;
+  const allowedOrigin = FRONTEND_URL;
 
-  res.setHeader("Access-Control-Allow-Origin", allowedOrigins);
+  res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -30,15 +29,13 @@ const server = http.createServer((req, res) => {
     const providedKey = parsedUrl.query.key;
 
     // Add strict validation
-    if (!providedKey) {
-      res.writeHead(401, { "Content-Type": "text/plain" });
-      res.end("Authentication failed - No key provided");
-      return;
-    }
-
     if (providedKey === process.env.QUERRY_TOKEN) {
       res.writeHead(200, { "Content-Type": "text/plain" });
       res.end("Welcome, admin!");
+    } else if (!providedKey) {
+      res.writeHead(401, { "Content-Type": "text/plain" });
+      res.end("Authentication failed - No key provided");
+      return;
     } else {
       res.writeHead(401, { "Content-Type": "text/plain" });
       res.end("Authentication failed - Invalid key");
@@ -59,7 +56,7 @@ const server = http.createServer((req, res) => {
 
 // Use the proper PORT from environment variables
 server.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on ${process.env.NODE_ENV}`);
+  console.log(`🚀 Server running on ${BASE_URL}:${PORT}`);
   console.log(`📍 Development-Local: http://localhost:${PORT}`);
-  console.log(`📍 Production-Frontend URL: ${FRONTEND_URL}`);
+  console.log(`📍 Allowed-Origin: ${FRONTEND_URL}`);
 });
