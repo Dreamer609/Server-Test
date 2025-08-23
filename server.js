@@ -26,7 +26,7 @@ const server = http.createServer((req, res) => {
   const parsedUrl = url.parse(req.url, true);
 
   // Handle root path with authentication
-  if (req.method === "GET" && parsedUrl.pathname === "/home") {
+  if (req.method === "GET" && parsedUrl.pathname === "/") {
     const providedKey = parsedUrl.query.key;
 
     // Add strict validation
