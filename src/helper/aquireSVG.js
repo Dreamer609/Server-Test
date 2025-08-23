@@ -7,7 +7,7 @@ const aquireSVG = (req, res) => {
   const hasAUTH = req.headers["authorization"];
   try {
     if (hasAUTH) {
-      if (hasAUTH === process.env.AUTH_TOKEN) {
+      if (hasAUTH === process.env.RESOURCE_ACCESS_TOKEN) {
         fetchFile(res);
       } else {
         res.writeHead(403, { "Content-Type": "application/json" });
