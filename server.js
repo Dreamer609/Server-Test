@@ -1,18 +1,25 @@
 const http = require("http");
 const aquireSVG = require("./src/helper/aquireSVG");
 require("dotenv").config();
+const url = require("url");
 
 const PORT = process.env.PORT || 3000;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
 const server = http.createServer((req, res) => {
-  if (req.method === "GET" && req.url === "/") {
+  const parsedUrl = url.parse(req.url, true);
+
+  if (
+    req.method === "GET" &&
+    parsedUrl.pathname === "/" &&
+    process.env.QUERRY_AUTH_TOKEN === parsedUrl.query.QUERRY_AUTH_TOKEN
+  ) {
     res.writeHead(200, { "Content-Type": "text/plain" });
-    res.end("Welcome!");
+    res.end("Welcome, admin!");
     return;
   }
 
-  if (req.method === "GET" && req.url === "/resource/putSVG") {
+  if (req.method === "GET" && parsedUrl.pathname === "/resource/acquireSVG") {
     aquireSVG(req, res);
     return;
   }
