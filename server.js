@@ -3,21 +3,32 @@ const aquireSVG = require("./src/helper/aquireSVG");
 require("dotenv").config();
 const url = require("url");
 
-
 const PORT = process.env.PORT || 3000;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
 const server = http.createServer((req, res) => {
-  // CORS headers - allow configured frontend or all in development
- const allowedOrigin =
-   process.env.NODE_ENV === "production"
-     ? BASE_URL // Allow requesting origin in production
-     : FRONTEND_URL;
+  // CORS headers - allow both production and development origins
+  const allowedOrigins = [FRONTEND_URL, BASE_URL];
 
-  res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+  const requestOrigin = req.headers.origin;
+
+  if (allowedOrigins.includes(requestOrigin)) {
+    res.setHeader("Access-Control-Allow-Origin", requestOrigin);
+  } else if (process.env.NODE_ENV === "development") {
+    // In development, allow any localhost origin
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      requestOrigin || "http://localhost:5173"
+    );
+  } else {
+    // In production, default to the configured frontend URL
+    res.setHeader("Access-Control-Allow-Origin", FRONTEND_URL);
+  }
+
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
 
   if (req.method === "OPTIONS") {
     res.writeHead(204);
@@ -54,7 +65,7 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📍 Local: http://localhost:${PORT}`);
-  if (BASE_URL !== `http://localhost:${PORT}`) {
-    console.log(`📍 External: ${BASE_URL}`);
-  }
+  console.log(`📍 Railway URL: ${BASE_URL}`);
+  console.log(`📍 Frontend URL: ${FRONTEND_URL}`);
+  console.log(`📍 Environment: ${process.env.NODE_ENV}`);
 });
