@@ -10,8 +10,10 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
 const server = http.createServer((req, res) => {
   // CORS headers - allow configured frontend or all in development
-  const allowedOrigin =
-    process.env.NODE_ENV === "production" ? BASE_URL : FRONTEND_URL;
+ const allowedOrigin =
+   process.env.NODE_ENV === "production"
+     ? req.headers.origin || BASE_URL // Allow requesting origin in production
+     : FRONTEND_URL;
 
   res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
